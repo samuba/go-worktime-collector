@@ -1,26 +1,53 @@
 package main
 
 import (
-
+	"os"
 	"fmt"
 	"os/exec"
 	"strings"
 	"time"
+	"strconv"
 )
 
+// Todo: zeitzone
+
 func main() {
+	daysToShow := getCmdArg(1, 5)
+	fmt.Print("searching eventlog for last ", daysToShow, " days... ")
+
 	log := readSystemEventlog()
+	fmt.Print("found ", len(log), " entries \n\n")
+
 	times := extractAllTimes(log)
 
-	d := filterForDate(times, time.Now())
+	for i := 0; i < daysToShow; i++ {
+		day := time.Now().AddDate(0, 0, -i)
+		dayTimes := filterForDate(times, day)
+		if len(dayTimes) == 0 {
+			continue
+		}
 
-	fmt.Println(d[0])
-	fmt.Println("start time: ", d[0])
-	fmt.Println("end time:   ", d[len(d)-1])
-	fmt.Printf("total: %vh \n", 3)
+		first := dayTimes[0]
+		last := dayTimes[len(dayTimes)-1]
+		if i == 0 {
+			last = time.Now()
+		}
+		fmt.Println(first.Format("02. January 2006"))
+		fmt.Println(first.Format("15:04"), "—", last.Format("15:04"))
+		fmt.Printf("total: %.2fh\n\n", last.Sub(first).Hours())
+	}
+}
 
-	fmt.Println("lines: ", len(log))
-	fmt.Println("times: ", len(times))
+func getCmdArg(index int, defaultVal int) int {
+	if len(os.Args) == 1 || len(os.Args) < index {
+		return defaultVal
+	}
+	fmt.Println(os.Args)
+	arg, err := strconv.Atoi(os.Args[index])
+	if err != nil || arg <= 0 {
+		return defaultVal
+	}
+	return arg
 }
 
 func filterForDate(times []time.Time, date time.Time) (result []time.Time) {
@@ -39,7 +66,6 @@ func sameDay(time1 time.Time, time2 time.Time) bool {
 }
 
 func readSystemEventlog() []string {
-	fmt.Println("parsing eventlogs...")
 	cmdArgs := strings.Fields("wevtutil qe System ")
 	cmd := exec.Command(cmdArgs[0], cmdArgs[1:len(cmdArgs)]...)
 
