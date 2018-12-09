@@ -1,8 +1,8 @@
-Will output the startup and shutdown time for each day in the past and calculate the uptime. I use this to track my worktime in the office.
+Will output the startup and shutdown time for each day in the past and calculate the uptime. I use this to track my worktimes in the office.
 
 Disclaimer: Works only with Windows for now and assumes that the computer is always shutdown before 00:00! 
 
-Compiled binary: [Download](https://github.com/samuba/go-worktime-monitor/blob/master/go-worktime-collector.exe?raw=true)
+[**Compiled Binary**](https://github.com/samuba/go-worktime-monitor/blob/master/go-worktime-collector.exe?raw=true)
 
 Example:
 ```
