@@ -1,9 +1,11 @@
 Will output the startup and shutdown time for each day in the past and calculate the uptime.
-WARNING: Assumes that the computer is always shutdown before 00:00!
+
+Disclaimer: Assumes that the computer is always shutdown before 00:00! I use this to track my worktime in the office.
 
 Example:
 ```
 > go-worktime-collector.exe 10
+
 searching eventlog for last 10 days... found 16264 entries
 
 09. December 2018
