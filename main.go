@@ -1,18 +1,20 @@
 package main
-
 import (
-	"os"
 	"fmt"
+	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
 )
 
 // Todo: zeitzone
 
 func main() {
-	daysToShow := getCmdArg(1, 5)
+	daysToShow := getDaysToShow()
+	if daysToShow == 0 {
+		return
+	}
 	fmt.Print("searching eventlog for last ", daysToShow, " days... ")
 
 	log := readSystemEventlog()
@@ -38,14 +40,15 @@ func main() {
 	}
 }
 
-func getCmdArg(index int, defaultVal int) int {
-	if len(os.Args) == 1 || len(os.Args) < index {
-		return defaultVal
+func getDaysToShow() int {
+	if len(os.Args) == 1 {
+		printHelp()
+		return 0
 	}
-	fmt.Println(os.Args)
-	arg, err := strconv.Atoi(os.Args[index])
+	arg, err := strconv.Atoi(os.Args[1])
 	if err != nil || arg <= 0 {
-		return defaultVal
+		printHelp()
+		return 0
 	}
 	return arg
 }
@@ -90,4 +93,11 @@ func extractAllTimes(eventlogLines []string) (times []time.Time) {
 		times = append(times, time)
 	}
 	return times
+}
+
+func printHelp() {
+	fmt.Println("Will output the startup and shutdown time for each day in the past and calculate the uptime.")
+	fmt.Println("WARNING: Assumes that the computer is always shutdown before 00:00!\n")
+	fmt.Println("Usage: worktime-collector.exe 10")
+	fmt.Println("Will display the last 10 days including today.")
 }
