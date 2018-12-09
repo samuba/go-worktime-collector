@@ -9,6 +9,7 @@ import (
 )
 
 // Todo: zeitzone
+// Todo: linux/mac support
 
 func main() {
 	daysToShow := getDaysToShow()
