@@ -1,4 +1,5 @@
 package main
+
 import (
 	"fmt"
 	"os"
@@ -8,7 +9,6 @@ import (
 	"time"
 )
 
-// Todo: zeitzone
 // Todo: linux/mac support
 
 func main() {
@@ -35,16 +35,20 @@ func main() {
 		if i == 0 {
 			last = time.Now()
 		}
+
 		fmt.Println(first.Format("02. January 2006"))
-		fmt.Println(first.Format("15:04"), "—", last.Format("15:04"))
+		if i == 0 {
+			fmt.Println(first.Format("15:04"), "—", "now")
+		} else {
+			fmt.Println(first.Format("15:04"), "—", last.Format("15:04"))
+		}
 		fmt.Printf("total: %.2fh\n\n", last.Sub(first).Hours())
 	}
 }
 
 func getDaysToShow() int {
 	if len(os.Args) == 1 {
-		printHelp()
-		return 0
+		return 7 // one week should be sensible default
 	}
 	arg, err := strconv.Atoi(os.Args[1])
 	if err != nil || arg <= 0 {
@@ -91,7 +95,7 @@ func extractAllTimes(eventlogLines []string) (times []time.Time) {
 		timeStr := line[start+len(timepattern) : start+len(timepattern)+30]
 		timeStr = timeStr[:23] + "Z"
 		time, _ := time.Parse("2006-01-02T15:04:05.000Z", timeStr)
-		times = append(times, time)
+		times = append(times, time.Local())
 	}
 	return times
 }
