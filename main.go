@@ -36,7 +36,7 @@ func main() {
 			last = time.Now()
 		}
 
-		fmt.Println(first.Format("02. January 2006"))
+		fmt.Println(first.Format("02.01.2006 (Monday)"))
 		if i == 0 {
 			fmt.Println(first.Format("15:04"), "—", "now")
 		} else {
